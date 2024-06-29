@@ -11,6 +11,7 @@ class Author(db.Model):
     name = Column(String)
     birth_date = Column(String)
     date_of_death = Column(String)
+    books = db.relationship('Book', backref ='author')
 
     def __repr__(self):
         return f"Author(id = {self.id}, name = {self.name})"
@@ -26,6 +27,7 @@ class Book(db.Model):
     isbn = Column(String)
     title = Column(String)
     publication_year = Column(String)
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
 
     def __repr__(self):
         return f"Book(id = {self.id}, title = {self.title})"

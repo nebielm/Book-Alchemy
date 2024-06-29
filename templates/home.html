@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  </head>
+  <body>
+
+    {% for book in books %}
+    <div>
+       <img src="{{ info[book.title][1] }}" alt="Cover">
+      <h3>{{ book.title }}</h3>
+      <h5>by {{ info[book.title][0] }}</h5>
+    </div>
+    {% endfor %}
+
+  </body>
+</html>
