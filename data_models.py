@@ -30,7 +30,7 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
 
     def __repr__(self):
-        return f"Book(id = {self.id}, title = {self.title})"
+        return f"Book(id = {self.id}, title = {self.title}, author_id = {self.author_id})"
 
     def __str__(self):
         return f" ID = {self.id}, ISBN = {self.isbn}, title = {self.title}, Publication Year = {self.publication_year}"

@@ -90,7 +90,14 @@ def add_book():
 
 @app.route('/', methods=['GET'])
 def home():
-    books = session.query(Book).order_by(Book.publication_year.asc()).all()
+    x = request.args.get('sort')
+    if x == "title":
+        books = session.query(Book).order_by(Book.title.asc()).all()
+        print(books)
+    elif x == "author":
+        books = session.query(Book).join(Author).order_by(Author.name.asc()).all()
+    else:
+        books = session.query(Book).order_by(Book.publication_year.asc()).all()
     info = {}
     for book in books:
         res = requests.get(BASE_URL + book.isbn)
