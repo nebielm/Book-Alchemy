@@ -7,12 +7,24 @@
   </head>
   <body>
 
+    <form action="/?search={{ keyword }}" method="GET">
+    <label for="keyword">Enter Keyword:</label>
+    <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required><br><br>
+      <input type="submit" value="Search">
+    </form>
+    <br><br>
+
     {% for book in books %}
-    <div>
-       <img src="{{ info[book.title][1] }}" alt="Cover">
-      <h3>{{ book.title }}</h3>
-      <h5>by {{ info[book.title][0] }}</h5>
-    </div>
+      {% if book.title is in info %}
+        <div>
+          <img src="{{ info[book.title][1] }}" alt="Cover">
+          <h3>{{ book.title }}</h3>
+          <h5>by {{ info[book.title][0] }}</h5>
+          <form action="{{url_for('delete_book', book_id=book.id)}}" method="POST">
+            <input type="submit" value="Delete">
+          </form>
+        </div>
+      {% endif %}
     {% endfor %}
 
   </body>

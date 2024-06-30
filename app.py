@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from data_models import db, Author, Book
 import requests
 import os
@@ -90,22 +90,36 @@ def add_book():
 
 @app.route('/', methods=['GET'])
 def home():
-    x = request.args.get('sort')
-    if x == "title":
+    sort_by = request.args.get('sort')
+    keyword = request.args.get('keyword')
+    if sort_by == "title":
         books = session.query(Book).order_by(Book.title.asc()).all()
         print(books)
-    elif x == "author":
+    elif sort_by == "author":
         books = session.query(Book).join(Author).order_by(Author.name.asc()).all()
     else:
         books = session.query(Book).order_by(Book.publication_year.asc()).all()
     info = {}
     for book in books:
+        if keyword:
+            if keyword.lower() not in book.title.lower():
+                continue
         res = requests.get(BASE_URL + book.isbn)
         book_dict = res.json()
         cover_url = book_dict['items'][0]['volumeInfo']['imageLinks']['thumbnail']
         author = session.query(Author.name).filter(Author.id == book.author_id).one()
         info[book.title] = [author, cover_url]
-    return render_template('home.html', books=books, info=info)
+    if len(info) > 0:
+        return render_template('home.html', books=books, info=info)
+    else:
+        return 'Error: Keyword not found', 404
+
+
+@app.route("/book/<int:book_id>/delete", methods=['POST'])
+def delete_book(book_id):
+    session.query(Book).filter(Book.id == book_id).delete()
+    session.commit()
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
