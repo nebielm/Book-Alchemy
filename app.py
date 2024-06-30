@@ -14,7 +14,7 @@ engine = create_engine('sqlite:///data/library.sqlite')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 # # Absolute path to the current directory
 # basedir = os.path.abspath(os.path.dirname(__file__))
@@ -106,7 +106,10 @@ def home():
                 continue
         res = requests.get(BASE_URL + book.isbn)
         book_dict = res.json()
-        cover_url = book_dict['items'][0]['volumeInfo']['imageLinks']['thumbnail']
+        try:
+            cover_url = book_dict['items'][0]['volumeInfo']['imageLinks']['thumbnail']
+        except Exception:
+            cover_url = 'https://www.klett-cotta.de/assets/default-image.jpg'
         author = session.query(Author.name).filter(Author.id == book.author_id).one()
         info[book.title] = [author, cover_url]
     if len(info) > 0:

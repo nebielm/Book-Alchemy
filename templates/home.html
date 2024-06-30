@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  </head>
-  <body>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
 
+<div class="container">
     <form action="/?search={{ keyword }}" method="GET">
-    <label for="keyword">Enter Keyword:</label>
-    <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required><br><br>
-      <input type="submit" value="Search">
+        <label for="keyword">Enter Keyword:</label>
+        <input type="text" id="keyword" name="keyword" value="{{ keyword }}" required>
+        <input type="submit" value="Search">
     </form>
+
     <br><br>
 
-    {% for book in books %}
-      {% if book.title is in info %}
-        <div>
-          <img src="{{ info[book.title][1] }}" alt="Cover">
-          <h3>{{ book.title }}</h3>
-          <h5>by {{ info[book.title][0] }}</h5>
-          <form action="{{url_for('delete_book', book_id=book.id)}}" method="POST">
-            <input type="submit" value="Delete">
-          </form>
-        </div>
-      {% endif %}
-    {% endfor %}
+    <ul class="book-list">
+        {% for book in books %}
+            {% if book.title in info %}
+                <li class="book-item">
+                    <img src="{{ info[book.title][1] }}" alt="Cover">
+                    <div class="book-item-content">
+                        <h3>{{ book.title }}</h3>
+                        <h5>by {{ info[book.title][0] }}</h5>
+                        <form class="delete-form" action="{{ url_for('delete_book', book_id=book.id) }}" method="POST">
+                            <input type="submit" value="Delete">
+                        </form>
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
 
-  </body>
+</body>
 </html>
